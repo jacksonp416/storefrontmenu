@@ -37,6 +37,7 @@ while True:
         while True:
           print("Customer Menu")
           print("products placeholder")
+          print("1. View products")
           print("2. Add item to cart")
           print("3. Remove item from cart")
           print("4. View cart")
