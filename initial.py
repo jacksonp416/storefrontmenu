@@ -1,3 +1,14 @@
+import json
+
+tax = 0.07
+datafile = "put file path here"
+
+try:
+  file = open(datafile, "r")
+  data = json.load(file)
+  inventory = data["inventory"]
+  sales = data["sales"]
+
 while True:
     print("Main menu")
     print("1. Owner menu")
@@ -17,7 +28,20 @@ while True:
         choice = input("Enter your choice: ")
 
         if choice == "1":
-          print("Placeholder")
+          name = input("Item name:")
+          if name in inventory:
+            print(f"'{name}' already exists in inventory")
+          else:
+            try:
+              cost = float(input("Item cost: "))
+              qty = int(input("Item quantity: "))
+              inventory[name] = {cost, qty}
+              file = open(datafile, "w")
+              json.dump(inventory, sales)
+              file.close
+              print(f"'{name}' added to inventory")
+
+        
         elif choice == "2":
           print("Placeholder")
         elif choice == "3":
