@@ -4,20 +4,16 @@ TAX_RATE = 0.07
 datafile = "data.json"
 
 try:
-    with open(datafile, "r") as file:
-        data = json.load(file)
-        inventory = data["inventory"]
-        sales = data["sales"]
+    file = open(datafile, "r")
+    data = json.load(file)
+    inventory = data["inventory"]
+    sales = data["sales"]
 except (FileNotFoundError, KeyError, json.JSONDecodeError):
     inventory = {}
     sales = []
 
-def save_data():
-    with open(datafile, "w") as file:
-        json.dump({"inventory": inventory, "sales": sales}, file)
-
 while True:
-    print("\nMain menu")
+    print("Main menu")
     print("1. Owner menu")
     print("2. Customer")
     print("3. Exit program")
@@ -25,7 +21,7 @@ while True:
 
     if choice == "1":
         while True:
-            print("\nOwner Menu")
+            print("Owner Menu")
             print("1. Add a product")
             print("2. Remove a product")
             print("3. Change item quantity")
@@ -45,7 +41,9 @@ while True:
                         price = float(input("Item selling price: "))
                         qty = int(input("Item quantity: "))
                         inventory[name] = {"cost": cost, "price": price, "qty": qty}
-                        save_data()
+                        file = open(datafile, "w")
+                        json.dump({"inventory": inventory, "sales": sales}, file)
+                        file.close()
                         print(f"'{name}' added to inventory")
                     except ValueError:
                         print("Error: Please enter valid numbers")
@@ -54,7 +52,9 @@ while True:
                 name = input("Item name: ")
                 if name in inventory:
                     del inventory[name]
-                    save_data()
+                    file = open(datafile, "w")
+                    json.dump({"inventory": inventory, "sales": sales}, file)
+                    file.close()
                     print(f"'{name}' removed from inventory")
                 else:
                     print(f"'{name}' not found in inventory")
@@ -72,7 +72,9 @@ while True:
                             print("Error: Quantity cannot be negative")
                         else:
                             inventory[name]["qty"] = new_qty
-                            save_data()
+                            file = open(datafile, "w")
+                            json.dump({"inventory": inventory, "sales": sales}, file)
+                            file.close()
                             print(f"'{name}' quantity updated to {new_qty}")
                     except ValueError:
                         print("Error: Please enter a valid number")
@@ -81,7 +83,7 @@ while True:
                 if len(inventory) == 0:
                     print("Inventory is empty")
                 else:
-                    print("\nCurrent Inventory:")
+                    print("Current Inventory:")
                     for name in inventory:
                         cost = inventory[name]["cost"]
                         price = inventory[name]["price"]
@@ -102,7 +104,7 @@ while True:
                             revenue_by_item[sale_name] += sale_total
                         else:
                             revenue_by_item[sale_name] = sale_total
-                    print("\nSales by item:")
+                    print("Sales by item:")
                     for name in revenue_by_item:
                         print(f"{name}: ${revenue_by_item[name]:.2f}")
                     print(f"Total revenue: ${total_revenue:.2f}")
@@ -116,9 +118,9 @@ while True:
 
     elif choice == "2":
         while True:
-            print("\nCustomer Menu")
+            print("Customer Menu")
             print("1. View products")
-            print("2. Buy an item")
+            print("2. Add item to cart")
             print("3. Exit")
             choice = input("Enter your choice: ")
 
@@ -126,7 +128,7 @@ while True:
                 if len(inventory) == 0:
                     print("Inventory is empty")
                 else:
-                    print("\nProducts:")
+                    print("Products:")
                     for name in inventory:
                         price = inventory[name]["price"]
                         qty = inventory[name]["qty"]
@@ -153,7 +155,7 @@ while True:
                                 tax_amount = subtotal * TAX_RATE
                                 total = subtotal + tax_amount
 
-                                print("\nReceipt")
+                                print("Receipt")
                                 print(f"Item: {name}")
                                 print(f"Quantity: {qty_wanted}")
                                 print(f"Unit price: ${unit_price:.2f}")
@@ -170,7 +172,9 @@ while True:
                                     "tax": tax_amount,
                                     "total": total
                                 })
-                                save_data()
+                                file = open(datafile, "w")
+                                json.dump({"inventory": inventory, "sales": sales}, file)
+                                file.close()
                         except ValueError:
                             print("Error: Please enter a valid number")
 
